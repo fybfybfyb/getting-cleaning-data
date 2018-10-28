@@ -1,3 +1,4 @@
+library(data.table)
 test_x <- fread(file = '.\\UCI HAR Dataset\\test\\X_test.txt')
 test_y <- fread(file = '.\\UCI HAR Dataset\\test\\y_test.txt')
 subject_test <- fread(file = '.\\UCI HAR Dataset\\test\\subject_test.txt')
@@ -15,28 +16,28 @@ names(df) <- c('subject','activity',features)
 
 features <- as.character(features)
 mean_std <- grep("mean\\(\\)|std\\(\\)",features)
-df_sub <- df[,c(1,2,mean_std)]
-colnames(df_sub) <- c("subject","activity",features[mean_std])
+df_clean <- df[,c(1,2,mean_std + 2)]
+colnames(df_clean) <- c("subject","activity",features[mean_std])
 
 
 
 activityName <- fread('.\\UCI HAR Dataset\\activity_labels.txt',data.table = F)
 activityName <- activityName[,2]
-df$activity <- activityName[df$activity]
+df_clean$activity <- activityName[df_clean$activity]
 #df$activity <- factor(df$activity, levels = activityName[,1] , labels = activityName[,2])
 
 
-names(df) <- gsub("\\()","",names(df))
-names(df) <- gsub("^t","time",names(df))
-names(df) <- gsub("^f","frequence",names(df))
-names(df) <- gsub("Acc","Accelerometer",names(df))
-names(df) <- gsub("Gyro", "Gyroscope",names(df))
-names(df) <- gsub("Mag", "Magnitude",names(df))
-names(df) <- gsub("BodyBody", "Body",names(df))
+names(df_clean) <- gsub("\\()","",names(df_clean))
+names(df_clean) <- gsub("^t","time",names(df_clean))
+names(df_clean) <- gsub("^f","frequence",names(df_clean))
+names(df_clean) <- gsub("Acc","Accelerometer",names(df_clean))
+names(df_clean) <- gsub("Gyro", "Gyroscope",names(df_clean))
+names(df_clean) <- gsub("Mag", "Magnitude",names(df_clean))
+names(df_clean) <- gsub("BodyBody", "Body",names(df_clean))
 
 
 
-df1 <- df[,3:ncol(df)]
+df1 <- df_clean[,3:ncol(df_clean)]
 group<-aggregate(df1, by =list(df$subject , df$activity),FUN = mean)
 write.table(x = group, file = "group.txt", row.names = FALSE)
 
