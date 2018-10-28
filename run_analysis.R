@@ -38,6 +38,6 @@ names(df_clean) <- gsub("BodyBody", "Body",names(df_clean))
 
 
 df1 <- df_clean[,3:ncol(df_clean)]
-group<-aggregate(df1, by =list(df$subject , df$activity),FUN = mean)
+group<-aggregate(df1, by =list(df_clean$subject , df_clean$activity),FUN = mean)
 write.table(x = group, file = "group.txt", row.names = FALSE)
 
